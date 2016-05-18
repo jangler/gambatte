@@ -39,6 +39,10 @@
 #include <utility>
 #include <vector>
 
+static const int FFSPEED = 3;
+
+static bool fastForward = false;
+
 namespace {
 
 using namespace gambatte;
@@ -742,6 +746,9 @@ bool GambatteSdl::handleEvents(BlitterWrapper &blitter) {
 			switch (e.key.keysym.sym) {
 			case SDLK_ESCAPE:
 				return true;
+			case SDLK_TAB:
+				fastForward = !fastForward;
+				break;
 			case SDLK_F5:
 				gambatte.saveState(blitter.inBuf().pixels, blitter.inBuf().pitch);
 				break;
@@ -784,7 +791,7 @@ static std::size_t const gb_samples_per_frame = 35112;
 static std::size_t const gambatte_max_overproduction = 2064;
 
 static bool isFastForward(Uint8 const *keys) {
-	return keys[SDLK_TAB];
+	return fastForward;
 }
 
 int GambatteSdl::run(long const sampleRate, int const latency, int const periods,
@@ -816,6 +823,8 @@ int GambatteSdl::run(long const sampleRate, int const latency, int const periods
 		if (isFastForward(keys)) {
 			if (vidFrameDoneSampleCnt >= 0) {
 				blitter.draw();
+				usec_t ft = (16743ul - 16743 / 1024) * sampleRate / 48000 / FFSPEED; 
+				frameWait.waitForNextFrameTime(ft);
 				blitter.present();
 			}
 		} else {
