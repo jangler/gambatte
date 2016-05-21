@@ -39,7 +39,7 @@
 #include <utility>
 #include <vector>
 
-static const int FFSPEED = 3;
+static const int FFSPEED = 2;
 
 static bool fastForward = false;
 
@@ -740,12 +740,12 @@ bool GambatteSdl::handleEvents(BlitterWrapper &blitter) {
 			switch (e.key.keysym.sym) {
 			case SDLK_f: blitter.toggleFullScreen(); break;
 			case SDLK_r: gambatte.reset(); break;
+			case SDLK_ESCAPE:
+				return true;
 			default: break;
 			}
 		} else {
 			switch (e.key.keysym.sym) {
-			case SDLK_ESCAPE:
-				return true;
 			case SDLK_TAB:
 				fastForward = !fastForward;
 				break;
