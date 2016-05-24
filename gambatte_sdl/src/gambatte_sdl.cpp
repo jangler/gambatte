@@ -39,7 +39,7 @@
 #include <utility>
 #include <vector>
 
-static const int FFSPEED = 2;
+static const int FFSPEED = 3;
 
 static bool fastForward = false;
 
@@ -790,10 +790,6 @@ bool GambatteSdl::handleEvents(BlitterWrapper &blitter) {
 static std::size_t const gb_samples_per_frame = 35112;
 static std::size_t const gambatte_max_overproduction = 2064;
 
-static bool isFastForward(Uint8 const *keys) {
-	return fastForward;
-}
-
 int GambatteSdl::run(long const sampleRate, int const latency, int const periods,
                      ResamplerInfo const &resamplerInfo, BlitterWrapper &blitter) {
 	Array<Uint32> const audioBuf(gb_samples_per_frame + gambatte_max_overproduction);
@@ -820,7 +816,7 @@ int GambatteSdl::run(long const sampleRate, int const latency, int const periods
 		bufsamples += runsamples;
 		bufsamples -= outsamples;
 
-		if (isFastForward(keys)) {
+		if (fastForward) {
 			if (vidFrameDoneSampleCnt >= 0) {
 				blitter.draw();
 				usec_t ft = (16743ul - 16743 / 1024) * sampleRate / 48000 / FFSPEED; 
