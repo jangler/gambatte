@@ -41,7 +41,7 @@
 
 static const int FFSPEED = 3;
 
-static bool fastForward = false;
+static bool fastForward = false, frameAdvance = false, nextFrame = false;
 
 namespace {
 
@@ -749,6 +749,12 @@ bool GambatteSdl::handleEvents(BlitterWrapper &blitter) {
 			case SDLK_TAB:
 				fastForward = !fastForward;
 				break;
+			case SDLK_F1:
+				frameAdvance = !frameAdvance;
+				break;
+			case SDLK_F2:
+				nextFrame = true;
+				break;
 			case SDLK_F5:
 				gambatte.saveState(blitter.inBuf().pixels, blitter.inBuf().pitch);
 				break;
@@ -805,6 +811,14 @@ int GambatteSdl::run(long const sampleRate, int const latency, int const periods
 	for (;;) {
 		if (handleEvents(blitter))
 			return 0;
+		if (frameAdvance) {
+			if (!nextFrame) {
+				SDL_Delay(1);
+				continue;
+			} else {
+				nextFrame = false;
+			}
+		}
 
 		BlitterWrapper::Buf const &vbuf = blitter.inBuf();
 		std::size_t runsamples = gb_samples_per_frame - bufsamples;
