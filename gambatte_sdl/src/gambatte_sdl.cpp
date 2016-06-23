@@ -39,7 +39,7 @@
 #include <utility>
 #include <vector>
 
-static const int FFSPEED = 3;
+static const int FFSPEED = 2;
 
 static bool fastForward = false, frameAdvance = false, nextFrame = false;
 
