@@ -837,12 +837,12 @@ int GambatteSdl::run(long const sampleRate, int const latency, int const periods
 		} else {
 			bool const blit = vidFrameDoneSampleCnt >= 0
 			               && !skipSched.skipNext(audioOutBufLow);
-			if (blit)
+			if (blit or frameAdvance)
 				blitter.draw();
 
 			AudioOut::Status const &astatus = aout.write(audioBuf, outsamples);
 			audioOutBufLow = astatus.low;
-			if (blit) {
+			if (blit or frameAdvance) {
 				usec_t ft = (16743ul - 16743 / 1024) * sampleRate / astatus.rate;
 				frameWait.waitForNextFrameTime(ft);
 				blitter.present();
